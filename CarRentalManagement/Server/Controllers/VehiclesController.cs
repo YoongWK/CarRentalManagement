@@ -36,12 +36,15 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Vehicles == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Vehicles == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //return await _context.Vehicles.ToListAsync();
-            var Vehicles = await _unitOfWork.Vehicles.GetAll(includes: q => q.Include(x => x.Make).Include(x => x.Model).Include(x => x.Colour));
-            return Ok(Vehicles);
+            var vehicles = await _unitOfWork.Vehicles.GetAll();
+            return Ok(vehicles);
         }
 
         // GET: api/Vehicles/5
@@ -52,35 +55,38 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Vehicles == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Vehicle = await _context.Vehicles.FindAsync(id);
-            var Vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
-
-            if (Vehicle == null)
+            if (_unitOfWork.Vehicles == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //return Vehicle;
-            return Ok(Vehicle);
+            //var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //return vehicle;
+            return Ok(vehicle);
         }
 
         // PUT: api/Vehicles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVehicle(int id, Vehicle Vehicle)
+        public async Task<IActionResult> PutVehicle(int id, Vehicle vehicle)
         {
-            if (id != Vehicle.Id)
+            if (id != vehicle.Id)
             {
                 return BadRequest();
             }
 
             //Refactored
-            //_context.Entry(Vehicle).State = EntityState.Modified;
-            _unitOfWork.Vehicles.Update(Vehicle);
+            //_context.Entry(vehicle).State = EntityState.Modified;
+            _unitOfWork.Vehicles.Update(vehicle);
 
             try
             {
@@ -108,19 +114,22 @@ namespace CarRentalManagement.Server.Controllers
         // POST: api/Vehicles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle Vehicle)
+        public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle vehicle)
         {
             //Refactored
             //if (_context.Vehicles == null)
-            //{
-            //    return Problem("Entity set 'ApplicationDbContext.Vehicles'  is null.");
-            //}
-            //_context.Vehicles.Add(Vehicle);
+            if (_unitOfWork.Vehicles == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Vehicles'  is null.");
+            }
+
+            //Refactored
+            //_context.Vehicles.Add(vehicle);
             //await _context.SaveChangesAsync();
-            await _unitOfWork.Vehicles.Insert(Vehicle);
+            await _unitOfWork.Vehicles.Insert(vehicle);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetVehicle", new { id = Vehicle.Id }, Vehicle);
+            return CreatedAtAction("GetVehicle", new { id = vehicle.Id }, vehicle);
         }
 
         // DELETE: api/Vehicles/5
@@ -129,18 +138,21 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Vehicles == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Vehicle = await _context.Vehicles.FindAsync(id);
-            var Vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
-            if (Vehicle == null)
+            if (_unitOfWork.Vehicles == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //_context.Vehicles.Remove(Vehicle);
+            //var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //_context.Vehicles.Remove(vehicle);
             //await _context.SaveChangesAsync();
             await _unitOfWork.Vehicles.Delete(id);
             await _unitOfWork.Save(HttpContext);
@@ -154,8 +166,8 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //return (_context.Vehicles?.Any(e => e.Id == id)).GetValueOrDefault();
-            var Vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
-            return Vehicle != null;
+            var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
+            return vehicle != null;
         }
     }
 }

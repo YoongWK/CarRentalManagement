@@ -36,9 +36,12 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Makes == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Makes == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //return await _context.Makes.ToListAsync();
             var makes = await _unitOfWork.Makes.GetAll();
             return Ok(makes);
@@ -52,9 +55,12 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Makes == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Makes == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //var make = await _context.Makes.FindAsync(id);
             var make = await _unitOfWork.Makes.Get(q => q.Id == id);
 
@@ -112,9 +118,12 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Makes == null)
-            //{
-            //    return Problem("Entity set 'ApplicationDbContext.Makes'  is null.");
-            //}
+            if (_unitOfWork.Makes == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Makes'  is null.");
+            }
+
+            //Refactored
             //_context.Makes.Add(make);
             //await _context.SaveChangesAsync();
             await _unitOfWork.Makes.Insert(make);
@@ -129,9 +138,12 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Makes == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Makes == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //var make = await _context.Makes.FindAsync(id);
             var make = await _unitOfWork.Makes.Get(q => q.Id == id);
             if (make == null)

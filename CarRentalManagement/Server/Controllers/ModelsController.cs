@@ -36,12 +36,15 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Models == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Models == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //return await _context.Models.ToListAsync();
-            var Models = await _unitOfWork.Models.GetAll();
-            return Ok(Models);
+            var models = await _unitOfWork.Models.GetAll();
+            return Ok(models);
         }
 
         // GET: api/Models/5
@@ -52,35 +55,38 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Models == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Model = await _context.Models.FindAsync(id);
-            var Model = await _unitOfWork.Models.Get(q => q.Id == id);
-
-            if (Model == null)
+            if (_unitOfWork.Models == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //return Model;
-            return Ok(Model);
+            //var model = await _context.Models.FindAsync(id);
+            var model = await _unitOfWork.Models.Get(q => q.Id == id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //return model;
+            return Ok(model);
         }
 
         // PUT: api/Models/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutModel(int id, Model Model)
+        public async Task<IActionResult> PutModel(int id, Model model)
         {
-            if (id != Model.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
 
             //Refactored
-            //_context.Entry(Model).State = EntityState.Modified;
-            _unitOfWork.Models.Update(Model);
+            //_context.Entry(model).State = EntityState.Modified;
+            _unitOfWork.Models.Update(model);
 
             try
             {
@@ -108,19 +114,22 @@ namespace CarRentalManagement.Server.Controllers
         // POST: api/Models
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Model>> PostModel(Model Model)
+        public async Task<ActionResult<Model>> PostModel(Model model)
         {
             //Refactored
             //if (_context.Models == null)
-            //{
-            //    return Problem("Entity set 'ApplicationDbContext.Models'  is null.");
-            //}
-            //_context.Models.Add(Model);
+            if (_unitOfWork.Models == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Models'  is null.");
+            }
+
+            //Refactored
+            //_context.Models.Add(model);
             //await _context.SaveChangesAsync();
-            await _unitOfWork.Models.Insert(Model);
+            await _unitOfWork.Models.Insert(model);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetModel", new { id = Model.Id }, Model);
+            return CreatedAtAction("GetModel", new { id = model.Id }, model);
         }
 
         // DELETE: api/Models/5
@@ -129,18 +138,21 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Models == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Model = await _context.Models.FindAsync(id);
-            var Model = await _unitOfWork.Models.Get(q => q.Id == id);
-            if (Model == null)
+            if (_unitOfWork.Models == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //_context.Models.Remove(Model);
+            //var model = await _context.Models.FindAsync(id);
+            var model = await _unitOfWork.Models.Get(q => q.Id == id);
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //_context.Models.Remove(model);
             //await _context.SaveChangesAsync();
             await _unitOfWork.Models.Delete(id);
             await _unitOfWork.Save(HttpContext);
@@ -154,8 +166,8 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //return (_context.Models?.Any(e => e.Id == id)).GetValueOrDefault();
-            var Model = await _unitOfWork.Models.Get(q => q.Id == id);
-            return Model != null;
+            var model = await _unitOfWork.Models.Get(q => q.Id == id);
+            return model != null;
         }
     }
 }

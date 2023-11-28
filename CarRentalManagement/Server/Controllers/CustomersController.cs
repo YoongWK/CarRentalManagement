@@ -36,12 +36,15 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Customers == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Customers == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //return await _context.Customers.ToListAsync();
-            var Customers = await _unitOfWork.Customers.GetAll();
-            return Ok(Customers);
+            var customers = await _unitOfWork.Customers.GetAll();
+            return Ok(customers);
         }
 
         // GET: api/Customers/5
@@ -52,35 +55,38 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Customers == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Customer = await _context.Customers.FindAsync(id);
-            var Customer = await _unitOfWork.Customers.Get(q => q.Id == id);
-
-            if (Customer == null)
+            if (_unitOfWork.Customers == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //return Customer;
-            return Ok(Customer);
+            //var customer = await _context.Customers.FindAsync(id);
+            var customer = await _unitOfWork.Customers.Get(q => q.Id == id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //return customer;
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer Customer)
+        public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
-            if (id != Customer.Id)
+            if (id != customer.Id)
             {
                 return BadRequest();
             }
 
             //Refactored
-            //_context.Entry(Customer).State = EntityState.Modified;
-            _unitOfWork.Customers.Update(Customer);
+            //_context.Entry(customer).State = EntityState.Modified;
+            _unitOfWork.Customers.Update(customer);
 
             try
             {
@@ -108,19 +114,22 @@ namespace CarRentalManagement.Server.Controllers
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer Customer)
+        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
             //Refactored
             //if (_context.Customers == null)
-            //{
-            //    return Problem("Entity set 'ApplicationDbContext.Customers'  is null.");
-            //}
-            //_context.Customers.Add(Customer);
+            if (_unitOfWork.Customers == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Customers'  is null.");
+            }
+
+            //Refactored
+            //_context.Customers.Add(customer);
             //await _context.SaveChangesAsync();
-            await _unitOfWork.Customers.Insert(Customer);
+            await _unitOfWork.Customers.Insert(customer);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetCustomer", new { id = Customer.Id }, Customer);
+            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
         }
 
         // DELETE: api/Customers/5
@@ -129,18 +138,21 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Customers == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Customer = await _context.Customers.FindAsync(id);
-            var Customer = await _unitOfWork.Customers.Get(q => q.Id == id);
-            if (Customer == null)
+            if (_unitOfWork.Customers == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //_context.Customers.Remove(Customer);
+            //var customer = await _context.Customers.FindAsync(id);
+            var customer = await _unitOfWork.Customers.Get(q => q.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //_context.Customers.Remove(customer);
             //await _context.SaveChangesAsync();
             await _unitOfWork.Customers.Delete(id);
             await _unitOfWork.Save(HttpContext);
@@ -154,8 +166,8 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //return (_context.Customers?.Any(e => e.Id == id)).GetValueOrDefault();
-            var Customer = await _unitOfWork.Customers.Get(q => q.Id == id);
-            return Customer != null;
+            var customer = await _unitOfWork.Customers.Get(q => q.Id == id);
+            return customer != null;
         }
     }
 }

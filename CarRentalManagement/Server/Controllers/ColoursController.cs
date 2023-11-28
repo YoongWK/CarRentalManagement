@@ -36,12 +36,15 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Colours == null)
-            //{
-            //    return NotFound();
-            //}
+            if (_unitOfWork.Colours == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
             //return await _context.Colours.ToListAsync();
-            var Colours = await _unitOfWork.Colours.GetAll();
-            return Ok(Colours);
+            var colours = await _unitOfWork.Colours.GetAll();
+            return Ok(colours);
         }
 
         // GET: api/Colours/5
@@ -52,35 +55,38 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Colours == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Colour = await _context.Colours.FindAsync(id);
-            var Colour = await _unitOfWork.Colours.Get(q => q.Id == id);
-
-            if (Colour == null)
+            if (_unitOfWork.Colours == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //return Colour;
-            return Ok(Colour);
+            //var colour = await _context.Colours.FindAsync(id);
+            var colour = await _unitOfWork.Colours.Get(q => q.Id == id);
+
+            if (colour == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //return colour;
+            return Ok(colour);
         }
 
         // PUT: api/Colours/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutColour(int id, Colour Colour)
+        public async Task<IActionResult> PutColour(int id, Colour colour)
         {
-            if (id != Colour.Id)
+            if (id != colour.Id)
             {
                 return BadRequest();
             }
 
             //Refactored
-            //_context.Entry(Colour).State = EntityState.Modified;
-            _unitOfWork.Colours.Update(Colour);
+            //_context.Entry(colour).State = EntityState.Modified;
+            _unitOfWork.Colours.Update(colour);
 
             try
             {
@@ -108,19 +114,22 @@ namespace CarRentalManagement.Server.Controllers
         // POST: api/Colours
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Colour>> PostColour(Colour Colour)
+        public async Task<ActionResult<Colour>> PostColour(Colour colour)
         {
             //Refactored
             //if (_context.Colours == null)
-            //{
-            //    return Problem("Entity set 'ApplicationDbContext.Colours'  is null.");
-            //}
-            //_context.Colours.Add(Colour);
+            if (_unitOfWork.Colours == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Colours'  is null.");
+            }
+
+            //Refactored
+            //_context.Colours.Add(colour);
             //await _context.SaveChangesAsync();
-            await _unitOfWork.Colours.Insert(Colour);
+            await _unitOfWork.Colours.Insert(colour);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetColour", new { id = Colour.Id }, Colour);
+            return CreatedAtAction("GetColour", new { id = colour.Id }, colour);
         }
 
         // DELETE: api/Colours/5
@@ -129,18 +138,21 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //if (_context.Colours == null)
-            //{
-            //    return NotFound();
-            //}
-            //var Colour = await _context.Colours.FindAsync(id);
-            var Colour = await _unitOfWork.Colours.Get(q => q.Id == id);
-            if (Colour == null)
+            if (_unitOfWork.Colours == null)
             {
                 return NotFound();
             }
 
             //Refactored
-            //_context.Colours.Remove(Colour);
+            //var colour = await _context.Colours.FindAsync(id);
+            var colour = await _unitOfWork.Colours.Get(q => q.Id == id);
+            if (colour == null)
+            {
+                return NotFound();
+            }
+
+            //Refactored
+            //_context.Colours.Remove(colour);
             //await _context.SaveChangesAsync();
             await _unitOfWork.Colours.Delete(id);
             await _unitOfWork.Save(HttpContext);
@@ -154,8 +166,8 @@ namespace CarRentalManagement.Server.Controllers
         {
             //Refactored
             //return (_context.Colours?.Any(e => e.Id == id)).GetValueOrDefault();
-            var Colour = await _unitOfWork.Colours.Get(q => q.Id == id);
-            return Colour != null;
+            var colour = await _unitOfWork.Colours.Get(q => q.Id == id);
+            return colour != null;
         }
     }
 }
