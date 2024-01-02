@@ -34,6 +34,8 @@ namespace CarRentalManagement.Server.Controllers
         //public async Task<ActionResult<IEnumerable<Colour>>> GetColours()
         public async Task<IActionResult> GetColours()
         {
+            //To be deleted or comment after testing the Global Error Handling
+            //return NotFound();
             //Refactored
             //if (_context.Colours == null)
             if (_unitOfWork.Colours == null)

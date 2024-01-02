@@ -21,7 +21,11 @@ namespace CarRentalManagement.Shared.Domain
         {
             if (DateIn != null)
             {
-                yield return new ValidationResult("DateIn must be greater than DateOut", new[] { "DateIn" });
+                if (DateIn <= DateOut)
+                {
+                    yield return new ValidationResult("DateIn must be greater than DateOut", new[] { "DateIn" });
+                }
+                
             }
         }
     }
